@@ -1,0 +1,187 @@
+h1 {
+  text-align: center;
+  font-size: 3em;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;   /* ← CHANGED: left items left, right items right */
+  align-items: center;              /* vertically align */
+  margin-bottom: 16px;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;                        /* space between checkboxes */
+}
+
+.filters label {
+  display: flex;
+  align-items: center;
+  gap: 6px;                         /* space between checkbox and label text */
+  font-size: 14px;
+  cursor: pointer;                  /* show pointer hand over the label */
+}
+.search-box {
+  width: 250px;
+  padding: 8px 12px;           /* space inside the input */
+  border: 1px solid #ccc;      /* light gray border */
+  border-radius: 4px;          /* slightly rounded corners */
+  font-size: 14px;             /* text size */
+}
+
+.search-box:focus {
+  outline: none;               /* remove default blue outline */
+  border-color: #1976d2;       /* highlight border when focused */
+}
+
+table{
+  border-collapse: collapse;
+  width: 100%;
+
+}
+
+th, td {
+  border: 1px solid #ccc;   /* light gray border on every cell */
+  padding: 4px 8px;        /* space inside each cell: 8px top/bottom, 12px left/right */
+  text-align: left;         /* text starts from the left */
+}
+
+th {
+  background-color: #f5f5f5;  /* light gray background for header row */
+  font-weight: bold;          /* make header text bold */
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr {
+  cursor: pointer;   /* show hand cursor on rows */
+}
+
+tbody tr:hover {
+  background-color: #e8f0fe;   /* light blue when mouse is over */
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+
+}
+
+
+.status__dot {
+  display: inline-block;       /* unlocks width/height on an inline element */
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;          /* circle */
+  background: gray;            /* default, overridden by modifiers */
+}
+
+
+.status--connected .status__dot {
+  background-color: green;
+}
+
+.status--connected {
+  color: green;
+}
+
+
+.status--disconnected .status__dot {
+  background-color: red;
+}
+
+.status--disconnected {
+  color: red;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;        /* full window height */
+}
+
+.table-container {
+  flex: 1;              /* grow to fill remaining space */
+  overflow: auto;       /* internal scroll if table is too tall */
+  min-height: 0;        /* ← important! see below */
+}
+
+.modal-overlay {
+  position: fixed;          /* stay in place even when page scrolls */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;                /* cover the whole screen */
+  background-color: rgba(0, 0, 0, 0.5);   /* semi-transparent black */
+  display: flex;
+  align-items: center;      /* center the modal vertically */
+  justify-content: center;  /* center the modal horizontally */
+}
+
+
+
+.modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal h2 {
+  color: #333;
+  margin-bottom: 18px;
+}
+
+.modal p {
+  color: #555;
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.modal button {
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 24px;
+  margin-top: 20px;
+
+}
+
+.modal button:hover {
+  background: #1565c0;
+}
+.modal-row {
+  display: flex;                    /* put children side by side */
+  justify-content: space-between;   /* push label left, value right */
+  padding: 8px 0;                   /* space above and below each row */
+  border-bottom: 1px solid #eee;    /* light line between rows */
+}
+
+.modal-label {
+  color: #777;                      /* lighter gray for labels */
+  font-size: 18px;
+}
+
+.modal-value {
+  color: #333;                      /* darker for values (more important) */
+  font-size: 18px;
+  font-weight: 500;                 /* slightly bold */
+}
+.modal-row:last-child {
+  border-bottom: none;              /* no line under the last row */
+}
