@@ -1,33 +1,18 @@
 import {useEffect, useState} from 'react'
 import './App.css'
 import {type Filters, getProducts, isBackendHealth, type Product} from "./api.ts";
+import {Pagination} from "./components/Pagination.tsx";
+import {ProductModal} from "./components/ProductModal.tsx";
+import {FiltersPanel} from "./components/FiltersPanel.tsx";
+import {ProductTable} from "./components/ProductTable.tsx";
+import {StatusMessage} from "./components/StatusMessage.tsx";
+import {ConnectionStatus, type ConnectionStatusType, FetchStatus, type FetchStatusType} from "./types/statuses.ts";
+import {ConnectionBadge} from "./components/ConnectionBadge.tsx";
 
-const ConnectionStatus = {
-    Checking: 'checking',
-    Connected: 'connected',
-    Disconnected: 'disconnected',
-} as const
-
-type ConnectionStatusType = typeof ConnectionStatus[keyof typeof ConnectionStatus]
-
-type ConnectionStatusFields = { text: string }
-
-const FetchStatus = {
-    Loading: 'loading',
-    Error: 'error',
-    Success: 'success',
-} as const
-
-type FetchStatusType = typeof FetchStatus[keyof typeof FetchStatus]
-
-const ConnectionStatusMapper: Record<ConnectionStatusType, ConnectionStatusFields> = {
-    checking: {text: "Checking..."},
-    connected: {text: "Successfully connected to backend"},
-    disconnected: {text: "Failed to connect to backend"},
-}
-const PAGE_SIZE = 15   // constant, not state (never changes)
+const PAGE_SIZE = 15
 
 function App() {
+
     const [filters, setFilters] = useState<Filters>({
         hasFbo: false,
         hasFbs: false,
@@ -41,7 +26,7 @@ function App() {
     const [currentPage, setCurrentPage] = useState(1)
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
-// Derived — computed every render
+
     const totalPages = Math.ceil(products.length / PAGE_SIZE)
     const start = (currentPage - 1) * PAGE_SIZE
     const end = start + PAGE_SIZE
@@ -62,7 +47,9 @@ function App() {
         }, 300)
 
 
-        return () => clearTimeout(timer)
+        return () => {
+            clearTimeout(timer)
+        }
     }, [searchTerm, filters])
 
     useEffect(() => {
@@ -76,123 +63,18 @@ function App() {
             })
     }, [])
 
-    let content
-    if (fetchStatus === FetchStatus.Loading) {
-        content = <p>Loading...</p>
-    } else if (fetchStatus === FetchStatus.Error) {
-        content = <p>Something was wrong with fetching products</p>
-    } else if (fetchStatus === FetchStatus.Success && products.length === 0 && searchTerm === '') {
-        content = <p>No products found</p>
-    } else if (fetchStatus === FetchStatus.Success && products.length === 0 && searchTerm !== '') {
-        content = <p>No products found by this search term</p>
-    } else {
-        content = <>
-            <table>
-                <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Offer ID</th>
-                    <th>sku</th>
-                    <th>Archived</th>
-                    <th>Has FBO stocks</th>
-                    <th>Has FBS stocks</th>
-                    <th>Is discounted</th>
-                </tr>
-                </thead>
-                <tbody>
-                {
-                    pageProducts.map(product => {
-                        return (<tr key={product.product_id}
-                                    onClick={() => {
-                                        setSelectedProduct(product)
-                                    }}>
-                            <td>{product.product_id}</td>
-                            <td>{product.offer_id}</td>
-                            <td>{product.sku}</td>
-                            <td>{product.archived ? "Yes" : "No"}</td>
-                            <td>{product.has_fbo_stocks ? "Yes" : "No"}</td>
-                            <td>{product.has_fbs_stocks ? "Yes" : "No"}</td>
-                            <td>{product.is_discounted ? "Yes" : "No"}</td>
-                        </tr>)
-                    })
-                }
-                </tbody>
-            </table>
-            <div className="pagination">
-                <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}        // ← can't go before page 1
-                >
-                    Previous
-                </button>
-
-                <span>Page {currentPage} of {totalPages}</span>
-
-                <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage === totalPages}  // ← can't go past last page
-                >
-                    Next
-                </button>
-            </div>
-        </>
-
-    }
-
     return (
         <div className="app">
             <h1>Frontend ↔ Backend</h1>
-            <p className={`status status--${status}`}>
-                <span className="status__dot"/>
-                {ConnectionStatusMapper[status].text}
-            </p>
+            <ConnectionBadge status={status}/>
             <div className="toolbar">
-                <div className="filters">
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={filters.hasFbo}
-                            onChange={() => {
-                                setFilters({...filters, hasFbo: !filters.hasFbo})
-                                setCurrentPage(1)
-                            }}
-                        />
-                        FBO stocks
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={filters.hasFbs}
-                            onChange={() => {
-                                setFilters({...filters, hasFbs: !filters.hasFbs})
-                                setCurrentPage(1)
-                            }}
-                        />
-                        FBS stocks
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={filters.archived}
-                            onChange={() => {
-                                setFilters({...filters, archived: !filters.archived})
-                                setCurrentPage(1)
-                            }}
-                        />
-                        Archived
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={filters.isDiscounted}
-                            onChange={() => {
-                                setFilters({...filters, isDiscounted: !filters.isDiscounted})
-                                setCurrentPage(1)
-                            }}
-                        />
-                        Is discounted
-                    </label>
-                </div>
+                <FiltersPanel filters={filters}
+                              onChange={(next) => {
+                                  setFilters(next)
+                                  setCurrentPage(1)
+                                }
+                              }
+                />
                 <input
                     className="search-box"
                     type="text"
@@ -205,42 +87,35 @@ function App() {
                 />
             </div>
             <div className="table-container">
-                {content}
+
+                <StatusMessage
+                    status={fetchStatus}
+                    products={products}
+                    searchTerm={searchTerm}
+                />
+
+                {fetchStatus === FetchStatus.Success && products.length > 0 &&
+                    (<>
+                        <ProductTable
+                            products={pageProducts}
+                            onRowClick={setSelectedProduct}
+                        />
+                        <Pagination
+                            page={currentPage}
+                            totalPages={totalPages}
+                            onPrev={() => setCurrentPage(currentPage - 1)}
+                            onNext={() => setCurrentPage(currentPage + 1)}
+                        />
+                    </>)
+                }
+
             </div>
             {/* Modal — only shows when a product is selected */}
             {selectedProduct && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <h2>{selectedProduct.offer_id}</h2>
-                        <div className="modal-row">
-                            <span className="modal-label">Product ID</span>
-                            <span className="modal-value">{selectedProduct.product_id}</span>
-                        </div>
-                        <div className="modal-row">
-                            <span className="modal-label">SKU</span>
-                            <span className="modal-value">{selectedProduct.sku}</span>
-                        </div>
-                        <div className="modal-row">
-                            <span className="modal-label">Archived</span>
-                            <span className="modal-value">{selectedProduct.archived ? 'Yes' : 'No'}</span>
-                        </div>
-                        <div className="modal-row">
-                            <span className="modal-label">FBO stocks</span>
-                            <span className="modal-value">{selectedProduct.has_fbo_stocks ? 'Yes' : 'No'}</span>
-                        </div>
-                        <div className="modal-row">
-                            <span className="modal-label">FBS stocks</span>
-                            <span className="modal-value">{selectedProduct.has_fbs_stocks ? 'Yes' : 'No'}</span>
-                        </div>
-                        <div className="modal-row">
-                            <span className="modal-label">Discounted</span>
-                            <span className="modal-value">{selectedProduct.is_discounted ? 'Yes' : 'No'}</span>
-                        </div>
-
-                        <button onClick={() => setSelectedProduct(null)}>Close</button>
-                    </div>
-
-                </div>
+                <ProductModal
+                    product={selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                />
             )}
         </div>
 
