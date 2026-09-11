@@ -1,4 +1,4 @@
-import type {Filters} from "../api.ts";
+import type {Filters} from "../api/api.ts";
 
 export type FiltersPanelProps = {
     filters: Filters,

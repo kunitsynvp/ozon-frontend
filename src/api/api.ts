@@ -23,11 +23,15 @@ export type ProductsResponse = {
     limit: number
 }
 
-// A reusable function that fetches products.
-// The component will call this instead of writing fetch() itself.
-//
-// It returns a Promise<ProductsResponse> — a promise that resolves
-// to the product data. Promises are like "I'll give you the answer later."
+export type LoginRequest = {
+    email: string
+    password: string
+}
+
+export type AuthResponse = {
+    token: string
+}
+
 export async function getProducts(filters: Filters, search?: string): Promise<ProductsResponse> {
 
     const params = new URLSearchParams()
@@ -54,4 +58,23 @@ export async function getProducts(filters: Filters, search?: string): Promise<Pr
 export async function isBackendHealth(): Promise<boolean> {
     const response = await fetch('/api/health')
     return response.ok
+}
+
+export async function login(data: LoginRequest): Promise<AuthResponse> {
+    // ВРЕМЕННО (бэка нет): имитация сети — раскомментируй вместо fetch
+    await new Promise(resolve => setTimeout(resolve, 800))   // «сеть» 800 мс
+    if (data.email === 'test@mail.ru' && data.password === '123') {
+        return {token: 'fake-token'}
+    }
+    throw new Error('Invalid email or password')
+
+    // TODO (когда будет бэк): fetch POST /api/auth/login
+    //   - method: 'POST'
+    //   - headers: {'Content-Type': 'application/json'}
+    //   - body: JSON.stringify(data)
+    //   - проверка response.ok, иначе throw (как в getProducts)
+
+    const response = await fetch('/api/auth/login', {
+        method: "POST"
+    })
 }

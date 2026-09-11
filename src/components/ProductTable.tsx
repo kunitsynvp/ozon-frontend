@@ -1,4 +1,4 @@
-import type {Product} from "../api.ts";
+import type {Product} from "../api/api.ts";
 
 type ProductTableProps = {
     products: Product[];

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import './App.css'
-import {type Filters, getProducts, isBackendHealth, type Product} from "./api.ts";
+import {type Filters, getProducts, isBackendHealth, type Product} from "./api/api.ts";
 import {Pagination} from "./components/Pagination.tsx";
 import {ProductModal} from "./components/ProductModal.tsx";
 import {FiltersPanel} from "./components/FiltersPanel.tsx";
