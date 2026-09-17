@@ -8,6 +8,9 @@ import {ProductTable} from "./components/ProductTable.tsx";
 import {StatusMessage} from "./components/StatusMessage.tsx";
 import {ConnectionStatus, type ConnectionStatusType, FetchStatus, type FetchStatusType} from "./types/statuses.ts";
 import {ConnectionBadge} from "./components/ConnectionBadge.tsx";
+import {LoginForm} from "./components/LoginForm.tsx";
+import {RegisterForm} from "./components/RegisterForm.tsx";
+import {ForgotPasswordForm} from "./components/ForgotPasswordForm.tsx";
 
 const PAGE_SIZE = 15
 
@@ -67,6 +70,9 @@ function App() {
         <div className="app">
             <h1>Frontend ↔ Backend</h1>
             <ConnectionBadge status={status}/>
+            <LoginForm/>
+            <RegisterForm/>
+            <ForgotPasswordForm/>
             <div className="toolbar">
                 <FiltersPanel filters={filters}
                               onChange={(next) => {

@@ -32,6 +32,15 @@ export type AuthResponse = {
     token: string
 }
 
+export type RegisterRequest = {
+    email: string
+    password: string
+}
+export type ForgotPasswordRequest = {
+    email: string
+}
+
+
 export async function getProducts(filters: Filters, search?: string): Promise<ProductsResponse> {
 
     const params = new URLSearchParams()
@@ -74,7 +83,22 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
     //   - body: JSON.stringify(data)
     //   - проверка response.ok, иначе throw (как в getProducts)
 
-    const response = await fetch('/api/auth/login', {
-        method: "POST"
-    })
+    // const response = await fetch('/api/auth/login', {
+    //     method: "POST",
+    //     headers: {'Content-Type': 'application/json'},
+    //     body: JSON.stringify(data)
+    // })
+}
+
+export async function register(data: RegisterRequest) {
+    await new Promise(resolve => setTimeout(resolve, 800))
+    if (data.email === "test@mail.ru" && data.password === '123') {
+        return {token: 'fake-register-token'} as const
+    }
+    throw new Error("This email already exists")
+}
+
+export async function forgotPassword({email}: ForgotPasswordRequest): Promise<{ok: boolean}> {
+    await new Promise(resolve => setTimeout(resolve, 800))
+    return {ok: true}
 }

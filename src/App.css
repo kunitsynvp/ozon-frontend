@@ -185,3 +185,20 @@ tbody tr:hover {
 .modal-row:last-child {
   border-bottom: none;              /* no line under the last row */
 }
+
+.auth-form, .register-form, .forgot-password-form {
+  max-width: 360px;      /* форма не растянется шире 360px */
+  margin: 16px auto;     /* auto по бокам = центрирование по горизонтали */
+  display: flex;
+  flex-direction: column; /* дети (поля) столбиком */
+  gap: 8px;               /* зазор между всеми детьми */
+}
+
+.auth-form__error, .register-form_error {
+  color: crimson;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;      /* light gray border */
+  border-radius: 4px;
+}
+

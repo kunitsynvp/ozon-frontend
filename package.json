@@ -1,13 +1,19 @@
 {
   "name": "ozon-frontend",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+  "description": "Frontend for browsing Ozon products with filters, pagination and backend health status",
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "typecheck": "tsc -b"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   },
   "dependencies": {
     "react": "^19.2.8",
