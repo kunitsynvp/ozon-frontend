@@ -14,3 +14,10 @@ export const FetchStatus = {
 
 export type FetchStatusType = typeof FetchStatus[keyof typeof FetchStatus]
 
+export const OzonStatus = {
+    Connected: 'connected',
+    AuthError: 'authError',
+    Unavailable: 'unavailable',
+    ReconnectionRequired: 'reconnectionRequired',
+} as const
+export type OzonStatusType = typeof OzonStatus[keyof typeof OzonStatus]

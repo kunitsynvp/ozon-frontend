@@ -1,5 +1,6 @@
-// src/api.ts
-// This file holds ALL the HTTP calls. Components import from here.
+
+import {OzonStatus, type OzonStatusType} from "../types/statuses.ts";
+
 export type Filters = {
     hasFbo: boolean
     hasFbs: boolean
@@ -70,18 +71,11 @@ export async function isBackendHealth(): Promise<boolean> {
 }
 
 export async function login(data: LoginRequest): Promise<AuthResponse> {
-    // ВРЕМЕННО (бэка нет): имитация сети — раскомментируй вместо fetch
     await new Promise(resolve => setTimeout(resolve, 800))   // «сеть» 800 мс
     if (data.email === 'test@mail.ru' && data.password === '123') {
         return {token: 'fake-token'}
     }
     throw new Error('Invalid email or password')
-
-    // TODO (когда будет бэк): fetch POST /api/auth/login
-    //   - method: 'POST'
-    //   - headers: {'Content-Type': 'application/json'}
-    //   - body: JSON.stringify(data)
-    //   - проверка response.ok, иначе throw (как в getProducts)
 
     // const response = await fetch('/api/auth/login', {
     //     method: "POST",
@@ -92,13 +86,34 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 
 export async function register(data: RegisterRequest) {
     await new Promise(resolve => setTimeout(resolve, 800))
-    if (data.email === "test@mail.ru" && data.password === '123') {
-        return {token: 'fake-register-token'} as const
+    if (data.email === "test@mail.ru") {
+        throw new Error("This email already exists")
     }
-    throw new Error("This email already exists")
+    return {token: 'fake-register-token'} as const
 }
 
 export async function forgotPassword({email}: ForgotPasswordRequest): Promise<{ok: boolean}> {
     await new Promise(resolve => setTimeout(resolve, 800))
+    console.log("Sent email to: ", email)
     return {ok: true}
+}
+
+// api/api.ts — добавь:
+export type OzonCredentials = {
+    clientId: string
+    apiKey: string
+}
+
+export async function connectOzon(creds: OzonCredentials): Promise<OzonStatusType> {
+    await new Promise(resolve => setTimeout(resolve, 800))
+    switch (creds.clientId) {
+        case 'bad':
+            return OzonStatus.AuthError
+        case 'down':
+            return OzonStatus.Unavailable
+        case 'stale':
+            return OzonStatus.ReconnectionRequired
+        default:
+            return OzonStatus.Connected
+    }
 }
