@@ -1,5 +1,7 @@
-import {type ChangeEvent, useState} from "react";
+import {type ChangeEvent, type FormEvent, useState} from "react";
 import {register} from "../api/api.ts";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../auth/AuthContext.tsx";
 
 type RegisterFormData = {
     email: string,
@@ -7,27 +9,38 @@ type RegisterFormData = {
     password2: string,
 }
 
+
 export function RegisterForm() {
+    const navigate = useNavigate();
+    const {login} = useAuth()
+
     const [registrationData, setRegistrationData] = useState<RegisterFormData>({
         email: "",
         password: "",
         password2: "",
     })
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        if(registrationData.password.length < 6) {
+            setError("Пароль должен содержать больше 6 символов")
+            return
+        }
         if(registrationData.password !== registrationData.password2) {
-            console.log("password", registrationData.password, "password2", registrationData.password2)
             setError("Пароли не совпадают")
             return
         }
-        setIsLoading(true)
+
         setError(null)
+        setIsLoading(true)
+
         register({email: registrationData.email, password: registrationData.password})
             .then(response => {
-                console.log(response)
+                login(response.token)
+                navigate("/", {replace: true})
             })
             .catch((error) => {
                 const errorMessage = error instanceof Error ? error.message : "Something went wrong"
@@ -35,9 +48,11 @@ export function RegisterForm() {
             })
             .finally(() => setIsLoading(false))
     }
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setRegistrationData({...registrationData, [e.target.name]: e.target.value})
     }
+
     return (
         <form className="register-form" onSubmit={handleSubmit}>
             <label htmlFor="email">Email</label>
@@ -54,7 +69,7 @@ export function RegisterForm() {
             <input id="password"
                    name="password"
                    type="password"
-                   autoComplete="current-password"
+                   autoComplete="new-password"
                    value={registrationData.password}
                    onChange={handleChange}
             />
@@ -63,7 +78,7 @@ export function RegisterForm() {
             <input id="password2"
                    name="password2"
                    type="password"
-                   autoComplete="current-password"
+                   autoComplete="new-password"
                    value={registrationData.password2}
                    onChange={handleChange}
             />

@@ -4,14 +4,13 @@ import {forgotPassword} from "../api/api.ts";
 export function ForgotPasswordForm() {
     const [email, setEmail] = useState<string>('');
     const [isSent, setIsSent] = useState(false);
-    // const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        setIsSent(true)
         forgotPassword({email})
-            .then(console.log)
+            .then(() => setIsSent(true))
+            .catch((error) => console.error(error));
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,10 +27,10 @@ export function ForgotPasswordForm() {
                 autoComplete='email'
                 value={email}
                 onChange={handleChange}
-            >
-            </input>
+            />
 
             {isSent && <p>Письмо отправлено на почту, если оно существует</p>}
+
             <button
                 className="forgot-password-submit-button"
                 type='submit'

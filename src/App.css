@@ -194,11 +194,60 @@ tbody tr:hover {
   gap: 8px;               /* зазор между всеми детьми */
 }
 
-.auth-form__error, .register-form_error {
+.auth-form__error, .register-form__error {
   color: crimson;
   font-size: 14px;
   padding: 8px 12px;
   border: 1px solid #ccc;      /* light gray border */
   border-radius: 4px;
 }
+
+.nav {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.status__dot {
+  background-color: green;
+}
+.ozon-status__dot {
+  display: inline-block;       /* unlocks width/height on an inline element */
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;          /* circle */
+  background: gray;            /* default, overridden by modifiers */
+  margin-right:10px;
+}
+
+.ozon-status--connected .ozon-status__dot {
+  background-color: green;
+}
+.ozon-status--connected {
+  color: green;
+}
+
+.ozon-status--authError .ozon-status__dot {
+  background-color: orange;
+}
+.ozon-status--authError {
+  color: orange;
+}
+
+.ozon-status--unavailable .ozon-status__dot {
+  background-color: red;
+}
+.ozon-status--unavailable{
+  color: red;
+}
+
+.ozon-status--reconnectionRequired .ozon-status__dot {
+  color: grey;
+}
+.ozon-status--reconnectionRequired {
+  color: grey;
+}
+
 

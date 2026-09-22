@@ -1,8 +1,14 @@
 // src/components/LoginForm.tsx
 import {type ChangeEvent, type FormEvent, useState} from 'react'
-import {login, type LoginRequest} from "../api/api.ts";
+import {login as loginInBackend, type LoginRequest} from "../api/api.ts";
+import {useAuth} from "../auth/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
+
 
 export function LoginForm() {
+    const { login } = useAuth()
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState<LoginRequest>({
         email: '',
         password: '',
@@ -18,9 +24,10 @@ export function LoginForm() {
         e.preventDefault()
         setError(null)
         setIsLoading(true)
-        login(formData)
+        loginInBackend(formData)
             .then(response => {
-                console.log("Token: ", response.token)
+                login(response.token)
+                navigate('/', {replace: true})
             })
             .catch(error => {
                 setError(error instanceof Error ? error.message : "Что-то пошло не так")
