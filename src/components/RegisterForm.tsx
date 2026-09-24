@@ -1,5 +1,5 @@
 import {type ChangeEvent, type FormEvent, useState} from "react";
-import {register} from "../api/api.ts";
+import {register, login as authLogin} from "../api/api.ts";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../auth/AuthContext.tsx";
 
@@ -37,8 +37,10 @@ export function RegisterForm() {
         setError(null)
         setIsLoading(true)
 
-        register({email: registrationData.email, password: registrationData.password})
-            .then(response => {
+        const {email, password} = registrationData
+        register({email, password})
+            .then(() => authLogin({email, password}))
+            .then((response) => {
                 login(response.token)
                 navigate("/", {replace: true})
             })

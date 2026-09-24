@@ -84,12 +84,12 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
     // })
 }
 
-export async function register(data: RegisterRequest) {
+export async function register(data: RegisterRequest): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 800))
     if (data.email === "test@mail.ru") {
-        throw new Error("This email already exists")
+        throw new Error("This email already registered")
     }
-    return {token: 'fake-register-token'} as const
+    return
 }
 
 export async function forgotPassword({email}: ForgotPasswordRequest): Promise<{ok: boolean}> {
